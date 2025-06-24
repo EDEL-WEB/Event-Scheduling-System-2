@@ -1,0 +1,14 @@
+# Flask environment variables
+.env
+
+# Bytecode
+__pycache__/
+*.pyc
+
+# Flask-Migrate
+migrations/__pycache__/
+migrations/versions/__pycache__/
+
+# Virtualenv folders (if local to server/)
+.venv/
+.env/
