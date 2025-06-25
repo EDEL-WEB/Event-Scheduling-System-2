@@ -61,10 +61,15 @@ function HomePage() {
         {events.map((event) => (
           <div key={event.id} className="event-card">
             <img
-              src={event.image_url || "https://via.placeholder.com/400x200.png?text=Event"}
-              alt={event.title}
-              className="event-image"
-            />
+  src={
+    event.image_url?.startsWith("http")
+      ? event.image_url // for placeholder or absolute URLs
+      : `/uploads/${event.image_url || "fallback.jpg"}` // serve uploaded image
+  }
+  alt={event.title}
+  className="event-image"
+/>
+
             <div className="event-details">
               <h3>{event.title}</h3>
               <p><strong>Date:</strong> {event.date}</p>

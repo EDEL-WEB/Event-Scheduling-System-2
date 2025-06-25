@@ -1,10 +1,27 @@
-from flask import request, session, jsonify, Blueprint
+from flask import request, session, jsonify, Blueprint, send_from_directory
 from flask_restful import Api, Resource
 from models import Event, User, db
 from datetime import datetime
+from werkzeug.utils import secure_filename
+from config import app
+import os
 
 event_bp = Blueprint('events', __name__, url_prefix='/events')
 api = Api(event_bp)
+
+# Serve uploaded images
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# Ensure the upload folder exists
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # GET all + POST new event
 class EventList(Resource):
@@ -17,14 +34,25 @@ class EventList(Resource):
         if not user_id:
             return {"error": "Unauthorized"}, 401
 
-        data = request.get_json()
+        data = request.form
+        image_file = request.files.get("image")
+        image_url = None
+
+        if image_file and allowed_file(image_file.filename):
+            filename = secure_filename(image_file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(filepath)
+            image_url = f"/uploads/{filename}"
+        else:
+            image_url = "https://via.placeholder.com/400x200.png?text=Event"
+
         try:
             event = Event(
                 title=data["title"],
                 description=data["description"],
                 date=datetime.strptime(data["date"], "%Y-%m-%d"),
                 location=data["location"],
-                image_url=data.get("image_url") or "https://via.placeholder.com/400x200.png?text=Event",
+                image_url=image_url,
                 created_by=user_id
             )
             db.session.add(event)
