@@ -34,7 +34,12 @@ db = SQLAlchemy(metadata=metadata)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 api = Api(app)
-CORS(app)
+# Replace this:
+# CORS(app)
+
+# With this:
+CORS(app, supports_credentials=True)
+
 
 # Initialize db with app
 db.init_app(app)
