@@ -230,7 +230,7 @@ body.dark .event-card {
   border: none;
   font-weight: 500;
   cursor: pointer;
-  color: white;
+  color: blue;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);

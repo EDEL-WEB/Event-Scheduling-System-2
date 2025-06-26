@@ -6,9 +6,7 @@ from sqlalchemy.exc import IntegrityError
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 api = Api(auth_bp)
 
-# ------------------------------
-# SIGNUP
-# ------------------------------
+
 class Signup(Resource):
     def post(self):
         data = request.get_json()
@@ -38,9 +36,6 @@ class Signup(Resource):
             db.session.rollback()
             return {"errors": ["Username or email already exists."]}, 422
 
-# ------------------------------
-# LOGIN
-# ------------------------------
 class Login(Resource):
     def post(self):
         data = request.get_json()
@@ -58,9 +53,7 @@ class Login(Resource):
 
         return {"error": "Invalid username or password"}, 401
 
-# ------------------------------
-# LOGOUT
-# ------------------------------
+
 class Logout(Resource):
     def delete(self):
         if session.get("user_id"):
@@ -68,9 +61,7 @@ class Logout(Resource):
             return {}, 204
         return {"error": "Not logged in"}, 401
 
-# ------------------------------
-# CHECK SESSION
-# ------------------------------
+
 class CheckSession(Resource):
     def get(self):
         user_id = session.get("user_id")
@@ -84,9 +75,7 @@ class CheckSession(Resource):
                 }, 200
         return {"error": "Unauthorized"}, 401
 
-# ------------------------------
-# Register resources with API
-# ------------------------------
+
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
