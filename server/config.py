@@ -28,25 +28,22 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  
 
 
-# Pretty JSON
 app.json.compact = False
 
-# Naming convention for Alembic
+
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s"
 })
 
-# Initialize extensions
+
 db = SQLAlchemy(metadata=metadata)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 api = Api(app)
-# Replace this:
-# CORS(app)
 
-# With this:
+
 CORS(app, supports_credentials=True)
 
 
-# Initialize db with app
+
 db.init_app(app)
