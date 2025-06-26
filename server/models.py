@@ -67,7 +67,7 @@ class Booking(db.Model, SerializerMixin):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    # Prevent infinite loops
+    
     serialize_rules = (
         '-user.password_hash',
         '-user.bookings',
