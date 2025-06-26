@@ -5,7 +5,7 @@ from models import Booking, Event, User, db
 booking_bp = Blueprint('bookings', __name__, url_prefix='/bookings')
 api = Api(booking_bp)
 
-# List all bookings (optional for admin/testing)
+
 class BookingList(Resource):
     def get(self):
         bookings = Booking.query.all()
@@ -30,15 +30,14 @@ class BookingList(Resource):
         db.session.commit()
         return booking.to_dict(), 201
 
-# Get bookings for a user
+
 class UserBookings(Resource):
     def get(self, user_id):
         user = User.query.get(user_id)
         if not user:
             return {"error": "User not found"}, 404
         return [b.to_dict() for b in user.bookings], 200
-
-# Cancel a booking
+    
 class BookingDetail(Resource):
     def delete(self, id):
         user_id = session.get("user_id")
@@ -49,7 +48,7 @@ class BookingDetail(Resource):
         db.session.commit()
         return {}, 204
 
-# Register routes
+
 api.add_resource(BookingList, '/')
 api.add_resource(UserBookings, '/user/<int:user_id>')
 api.add_resource(BookingDetail, '/<int:id>')
