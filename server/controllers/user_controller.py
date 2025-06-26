@@ -3,13 +3,13 @@ from models import User, db
 
 user_bp = Blueprint('user_bp', __name__, url_prefix='/users')
 
-# GET /users - Get all users
+
 @user_bp.route('/', methods=['GET'])
 def get_users():
     users = User.query.all()
     return jsonify([u.to_dict() for u in users]), 200
 
-# GET /users/<id> - Get user by ID
+
 @user_bp.route('/<int:id>', methods=['GET'])
 def get_user(id):
     user = User.query.get(id)
@@ -17,7 +17,7 @@ def get_user(id):
         return jsonify({"error": "User not found"}), 404
     return jsonify(user.to_dict()), 200
 
-# POST /users - Create new user
+
 @user_bp.route('/', methods=['POST'])
 def create_user():
     data = request.get_json()
@@ -35,7 +35,7 @@ def create_user():
 
     return jsonify(new_user.to_dict()), 201
 
-# PATCH /users/<id> - Update user
+
 @user_bp.route('/<int:id>', methods=['PATCH'])
 def update_user(id):
     user = User.query.get(id)
@@ -50,7 +50,7 @@ def update_user(id):
     db.session.commit()
     return jsonify(user.to_dict()), 200
 
-# DELETE /users/<id> - Delete user
+
 @user_bp.route('/<int:id>', methods=['DELETE'])
 def delete_user(id):
     user = User.query.get(id)
@@ -61,7 +61,7 @@ def delete_user(id):
     db.session.commit()
     return {}, 204
 
-# (Optional) GET /users/me - Get currently logged in user
+
 @user_bp.route('/me', methods=['GET'])
 def current_user():
     user_id = session.get("user_id")
