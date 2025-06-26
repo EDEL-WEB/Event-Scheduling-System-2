@@ -55,8 +55,8 @@ class Event(db.Model, SerializerMixin):
         '-creator.bookings',
         '-bookings.event',
         '-bookings.user.bookings',
-        'created_by',             # ✅ include creator ID
-        'creator.username'        # ✅ optionally include creator’s name
+        'created_by',
+        'creator.username'
     )
 
 class Booking(db.Model, SerializerMixin):
