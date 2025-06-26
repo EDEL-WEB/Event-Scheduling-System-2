@@ -33,7 +33,6 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, plaintext):
         return bcrypt.check_password_hash(self.password_hash, plaintext)
 
-
 class Event(db.Model, SerializerMixin):
     __tablename__ = 'events'
 
@@ -50,14 +49,15 @@ class Event(db.Model, SerializerMixin):
 
     bookings = db.relationship('Booking', backref='event', cascade='all, delete-orphan')
 
-    # Prevent infinite recursion through bookings -> user -> events
+    # ✅ FIXED serialize_rules
     serialize_rules = (
         '-creator.password_hash',
         '-creator.bookings',
         '-bookings.event',
         '-bookings.user.bookings',
+        'created_by',             # ✅ include creator ID
+        'creator.username'        # ✅ optionally include creator’s name
     )
-
 
 class Booking(db.Model, SerializerMixin):
     __tablename__ = 'bookings'

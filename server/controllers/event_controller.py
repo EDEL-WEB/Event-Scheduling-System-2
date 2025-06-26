@@ -6,12 +6,11 @@ from werkzeug.utils import secure_filename
 from config import app
 import os
 
+# 🔹 Blueprint + API
 event_bp = Blueprint('events', __name__, url_prefix='/events')
 api = Api(event_bp)
 
-# Serve uploaded images
-
-# Ensure the upload folder exists
+# 🧾 Upload Configuration
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -20,7 +19,12 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# GET all + POST new event
+# 🖼️ Serve uploaded images
+@event_bp.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# 📘 GET all events, POST new event
 class EventList(Resource):
     def get(self):
         events = Event.query.all()
@@ -49,6 +53,8 @@ class EventList(Resource):
                 description=data["description"],
                 date=datetime.strptime(data["date"], "%Y-%m-%d"),
                 location=data["location"],
+                start_time=data.get("start_time"),
+                end_time=data.get("end_time"),
                 image_url=image_url,
                 created_by=user_id
             )
@@ -58,7 +64,7 @@ class EventList(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-# GET one, PATCH, DELETE
+# 📗 GET one event, PATCH, DELETE
 class EventDetail(Resource):
     def get(self, id):
         event = Event.query.get(id)
@@ -69,12 +75,29 @@ class EventDetail(Resource):
     def patch(self, id):
         user_id = session.get("user_id")
         event = Event.query.get(id)
+
         if not event or event.created_by != user_id:
             return {"error": "Unauthorized or not found"}, 403
-        data = request.get_json()
-        for field in ['title', 'description', 'date', 'location']:
+
+        data = request.form
+        image_file = request.files.get("image_file")
+
+        if image_file and allowed_file(image_file.filename):
+            filename = secure_filename(image_file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(filepath)
+            event.image_url = filename
+
+        for field in ['title', 'description', 'location', 'start_time', 'end_time']:
             if field in data:
                 setattr(event, field, data[field])
+
+        if 'date' in data:
+            try:
+                event.date = datetime.strptime(data['date'], "%Y-%m-%d")
+            except ValueError:
+                return {"error": "Invalid date format. Use YYYY-MM-DD."}, 400
+
         db.session.commit()
         return event.to_dict(), 200
 
@@ -87,14 +110,32 @@ class EventDetail(Resource):
         db.session.commit()
         return {}, 204
 
-# GET upcoming events
+# 📅 GET upcoming events
 class UpcomingEvents(Resource):
     def get(self):
         today = datetime.now().date()
         events = Event.query.filter(Event.date >= today).all()
         return [e.to_dict() for e in events], 200
 
-# GET attendees of an event
+# 🔎 GET events by date range
+class EventSearch(Resource):
+    def get(self):
+        start = request.args.get("start_date")
+        end = request.args.get("end_date")
+
+        if not start or not end:
+            return {"error": "Start and end date required"}, 400
+
+        try:
+            start_date = datetime.strptime(start, "%Y-%m-%d")
+            end_date = datetime.strptime(end, "%Y-%m-%d")
+        except ValueError:
+            return {"error": "Invalid date format. Use YYYY-MM-DD"}, 400
+
+        events = Event.query.filter(Event.date >= start_date, Event.date <= end_date).all()
+        return [e.to_dict() for e in events], 200
+
+# 👥 GET event attendees
 class EventAttendees(Resource):
     def get(self, id):
         event = Event.query.get(id)
@@ -103,19 +144,7 @@ class EventAttendees(Resource):
         attendees = [b.user.to_dict() for b in event.bookings]
         return attendees, 200
 
-# GET by date range
-class EventSearch(Resource):
-    def get(self):
-        start = request.args.get("start_date")
-        end = request.args.get("end_date")
-        if not start or not end:
-            return {"error": "Start and end date required"}, 400
-        start_date = datetime.strptime(start, "%Y-%m-%d")
-        end_date = datetime.strptime(end, "%Y-%m-%d")
-        events = Event.query.filter(Event.date >= start_date, Event.date <= end_date).all()
-        return [e.to_dict() for e in events], 200
-
-# Register routes
+# 🔗 Register all routes
 api.add_resource(EventList, '/')
 api.add_resource(EventDetail, '/<int:id>')
 api.add_resource(UpcomingEvents, '/upcoming')

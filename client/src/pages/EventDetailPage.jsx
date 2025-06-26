@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import '../App.css'; // External CSS file for button styling
 
 const EventDetailPage = () => {
-  const { id } = useParams(); // event ID from the route
+  const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [userId, setUserId] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch event details
     fetch(`/events/${id}`)
       .then((res) => res.json())
       .then((data) => setEvent(data))
       .catch((err) => console.error("Event not found", err));
 
+    // Check user session
     fetch('/auth/check_session', { credentials: 'include' })
       .then((res) => {
         if (!res.ok) throw new Error('Unauthorized');
@@ -31,9 +34,7 @@ const EventDetailPage = () => {
 
     fetch('/bookings/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({ event_id: parseInt(id) }),
     })
@@ -41,9 +42,7 @@ const EventDetailPage = () => {
         if (!res.ok) throw new Error('Booking failed');
         return res.json();
       })
-      .then(() => {
-        setBookingSuccess(true);
-      })
+      .then(() => setBookingSuccess(true))
       .catch((err) => {
         alert("Could not book event.");
         console.error(err);
@@ -55,11 +54,17 @@ const EventDetailPage = () => {
   return (
     <div className="dashboard-container">
       <h2>{event.title}</h2>
+
       <img
-        src={event.image_url || 'https://via.placeholder.com/600x300'}
+        src={
+          event.image_url?.startsWith("http") || event.image_url?.startsWith("/uploads/")
+            ? event.image_url
+            : `/uploads/${event.image_url || 'fallback.jpg'}`
+        }
         alt={event.title}
         style={{ width: '100%', maxWidth: '600px', marginBottom: '1rem' }}
       />
+
       <p><strong>Description:</strong> {event.description}</p>
       <p><strong>Date:</strong> {event.date}</p>
       <p><strong>Location:</strong> {event.location}</p>
@@ -69,11 +74,21 @@ const EventDetailPage = () => {
       </p>
       <p><strong>Created by:</strong> {event.creator?.username || 'Unknown'}</p>
 
-      <button onClick={handleBooking} className="btn-primary">
-        Book This Event
-      </button>
-
-      {bookingSuccess && <p className="success">🎉 Booking confirmed!</p>}
+      {!bookingSuccess ? (
+        <button onClick={handleBooking} className="btn-primary">
+          Book This Event
+        </button>
+      ) : (
+        <div style={{ marginTop: '1rem' }}>
+          <p className="success">🎉 Booking confirmed!</p>
+          <button
+            onClick={() => navigate('/bookings')}
+            className="btn-bookings"
+          >
+            Go to My Bookings
+          </button>
+        </div>
+      )}
     </div>
   );
 };

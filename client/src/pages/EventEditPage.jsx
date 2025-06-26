@@ -4,10 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 const EventEditPage = () => {
-  const { id } = useParams(); // Event ID from route
+  const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [imageFile, setImageFile] = useState(null); // 📷 for image upload
 
   useEffect(() => {
     fetch(`/events/${id}`)
@@ -31,15 +32,25 @@ const EventEditPage = () => {
     date: Yup.date().required('Date is required'),
     start_time: Yup.string(),
     end_time: Yup.string(),
-    image_url: Yup.string().url('Must be a valid URL'),
+    // No image validation here – optional
   });
 
   const handleSubmit = (values) => {
+    const formData = new FormData();
+    formData.append('title', values.title);
+    formData.append('description', values.description);
+    formData.append('location', values.location);
+    formData.append('date', values.date);
+    formData.append('start_time', values.start_time);
+    formData.append('end_time', values.end_time);
+    if (imageFile) {
+      formData.append('image_file', imageFile); // 🖼️ new image if uploaded
+    }
+
     fetch(`/events/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(values),
+      body: formData,
     })
       .then((res) => {
         if (!res.ok) throw new Error('Update failed');
@@ -69,41 +80,59 @@ const EventEditPage = () => {
           date: event.date,
           start_time: event.start_time || '',
           end_time: event.end_time || '',
-          image_url: event.image_url || '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
       >
-        <Form className="form">
-          <label>Title</label>
-          <Field name="title" />
-          <ErrorMessage name="title" component="div" className="error" />
+        {({ setFieldValue }) => (
+          <Form className="form" encType="multipart/form-data">
+            <label>Title</label>
+            <Field name="title" />
+            <ErrorMessage name="title" component="div" className="error" />
 
-          <label>Description</label>
-          <Field as="textarea" name="description" />
-          <ErrorMessage name="description" component="div" className="error" />
+            <label>Description</label>
+            <Field as="textarea" name="description" />
+            <ErrorMessage name="description" component="div" className="error" />
 
-          <label>Location</label>
-          <Field name="location" />
-          <ErrorMessage name="location" component="div" className="error" />
+            <label>Location</label>
+            <Field name="location" />
+            <ErrorMessage name="location" component="div" className="error" />
 
-          <label>Date</label>
-          <Field name="date" type="date" />
-          <ErrorMessage name="date" component="div" className="error" />
+            <label>Date</label>
+            <Field type="date" name="date" />
+            <ErrorMessage name="date" component="div" className="error" />
 
-          <label>Start Time</label>
-          <Field name="start_time" type="time" />
+            <label>Start Time</label>
+            <Field type="time" name="start_time" />
 
-          <label>End Time</label>
-          <Field name="end_time" type="time" />
+            <label>End Time</label>
+            <Field type="time" name="end_time" />
 
-          <label>Image URL</label>
-          <Field name="image_url" />
-          <ErrorMessage name="image_url" component="div" className="error" />
+            <label>Upload New Image</label>
+            <input
+              type="file"
+              name="image_file"
+              accept="image/*"
+              onChange={(e) => {
+                setImageFile(e.currentTarget.files[0]);
+              }}
+            />
 
-          <button type="submit" className="btn-primary">Update Event</button>
-        </Form>
+            {event.image_url && (
+              <div>
+                <p>Current Image:</p>
+                <img
+                  src={event.image_url.startsWith('http') ? event.image_url : `/uploads/${event.image_url}`}
+                  alt={event.title}
+                  style={{ width: '100%', maxWidth: '300px', marginTop: '10px' }}
+                />
+              </div>
+            )}
+
+            <button type="submit" className="btn-primary">💾 Update Event</button>
+          </Form>
+        )}
       </Formik>
     </div>
   );
