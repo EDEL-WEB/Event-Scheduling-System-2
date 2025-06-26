@@ -50,9 +50,9 @@ function NavBar() {
           </>
         )}
 
-        {/* 🌙 Theme Toggle */}
+        {}
         <button className="btn theme-toggle" onClick={toggleTheme}>
-          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+          {theme === "light" ? "Dark Mode" : "Light Mode"}
         </button>
       </div>
     </nav>
@@ -60,3 +60,4 @@ function NavBar() {
 }
 
 export default NavBar;
+  
