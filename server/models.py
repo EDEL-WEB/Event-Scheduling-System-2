@@ -13,7 +13,7 @@ class User(db.Model, SerializerMixin):
     events = db.relationship('Event', backref='creator', cascade='all, delete-orphan')
     bookings = db.relationship('Booking', backref='user', cascade='all, delete-orphan')
 
-    # Prevent infinite loops and hide sensitive data
+    
     serialize_rules = (
         '-password_hash',
         '-events.creator',
@@ -49,7 +49,7 @@ class Event(db.Model, SerializerMixin):
 
     bookings = db.relationship('Booking', backref='event', cascade='all, delete-orphan')
 
-    # ✅ FIXED serialize_rules
+
     serialize_rules = (
         '-creator.password_hash',
         '-creator.bookings',
