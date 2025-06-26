@@ -6,11 +6,9 @@ from werkzeug.utils import secure_filename
 from config import app
 import os
 
-# 🔹 Blueprint + API
 event_bp = Blueprint('events', __name__, url_prefix='/events')
 api = Api(event_bp)
 
-# 🧾 Upload Configuration
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -19,12 +17,12 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# 🖼️ Serve uploaded images
+
 @event_bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-# 📘 GET all events, POST new event
+
 class EventList(Resource):
     def get(self):
         events = Event.query.all()
@@ -64,7 +62,7 @@ class EventList(Resource):
         except Exception as e:
             return {"error": str(e)}, 400
 
-# 📗 GET one event, PATCH, DELETE
+
 class EventDetail(Resource):
     def get(self, id):
         event = Event.query.get(id)
@@ -110,14 +108,14 @@ class EventDetail(Resource):
         db.session.commit()
         return {}, 204
 
-# 📅 GET upcoming events
+
 class UpcomingEvents(Resource):
     def get(self):
         today = datetime.now().date()
         events = Event.query.filter(Event.date >= today).all()
         return [e.to_dict() for e in events], 200
 
-# 🔎 GET events by date range
+
 class EventSearch(Resource):
     def get(self):
         start = request.args.get("start_date")
@@ -135,7 +133,7 @@ class EventSearch(Resource):
         events = Event.query.filter(Event.date >= start_date, Event.date <= end_date).all()
         return [e.to_dict() for e in events], 200
 
-# 👥 GET event attendees
+
 class EventAttendees(Resource):
     def get(self, id):
         event = Event.query.get(id)
@@ -144,7 +142,7 @@ class EventAttendees(Resource):
         attendees = [b.user.to_dict() for b in event.bookings]
         return attendees, 200
 
-# 🔗 Register all routes
+
 api.add_resource(EventList, '/')
 api.add_resource(EventDetail, '/<int:id>')
 api.add_resource(UpcomingEvents, '/upcoming')
