@@ -9,15 +9,15 @@ from datetime import datetime
 fake = Faker()
 
 with app.app_context():
-    print("🌱 Seeding data...")
+    print(" Seeding data...")
 
-    # Clear old data
+    
     Booking.query.delete()
     Event.query.delete()
     User.query.delete()
     db.session.commit()
 
-    # Seed users
+    
     users = []
     for i in range(5):
         user = User(
@@ -30,7 +30,7 @@ with app.app_context():
 
     db.session.commit()
 
-    # Seed events with real Unsplash images
+    
     static_events = [
     {
         "title": "React Conference",
@@ -143,7 +143,7 @@ with app.app_context():
 
     db.session.commit()
 
-    # Seed bookings randomly
+    
     for _ in range(5):
         booking = Booking(
             user_id=random.choice(users).id,
@@ -153,4 +153,4 @@ with app.app_context():
 
     db.session.commit()
 
-    print("✅ Done seeding!")
+    print(" Done seeding!")
