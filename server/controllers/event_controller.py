@@ -10,9 +10,6 @@ event_bp = Blueprint('events', __name__, url_prefix='/events')
 api = Api(event_bp)
 
 # Serve uploaded images
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # Ensure the upload folder exists
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')

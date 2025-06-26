@@ -53,7 +53,9 @@ function HomePage() {
             <Link to="/dashboard" className="btn">My Dashboard</Link>
           </>
         ) : (
-          <p className="login-reminder">Please <Link to="/login">Login</Link> or <Link to="/register">Register</Link> to book events.</p>
+          <p className="login-reminder">
+            Please <Link to="/login">Login</Link> or <Link to="/register">Register</Link> to book events.
+          </p>
         )}
       </div>
 
@@ -61,14 +63,14 @@ function HomePage() {
         {events.map((event) => (
           <div key={event.id} className="event-card">
             <img
-  src={
-    event.image_url?.startsWith("http")
-      ? event.image_url // for placeholder or absolute URLs
-      : `/uploads/${event.image_url || "fallback.jpg"}` // serve uploaded image
-  }
-  alt={event.title}
-  className="event-image"
-/>
+              src={
+                event.image_url?.startsWith("http") || event.image_url?.startsWith("/uploads/")
+                  ? event.image_url
+                  : `/uploads/${event.image_url || "fallback.jpg"}`
+              }
+              alt={event.title}
+              className="event-image"
+            />
 
             <div className="event-details">
               <h3>{event.title}</h3>
