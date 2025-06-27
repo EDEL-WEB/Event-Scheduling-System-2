@@ -71,19 +71,9 @@ class CheckSession(Resource):
                 return {
                     "id": user.id,
                     "username": user.username,
-                    "email": user.email,
-                    "events": [event.to_dict() for event in user.events],
-                    "bookings": [
-                        {
-                            "id": booking.id,
-                            "status": booking.status,
-                            "event": booking.event.to_dict() if booking.event else None
-                        }
-                        for booking in user.bookings
-                    ]
+                    "email": user.email
                 }, 200
         return {"error": "Unauthorized"}, 401
-
 
 
 api.add_resource(Signup, '/signup')

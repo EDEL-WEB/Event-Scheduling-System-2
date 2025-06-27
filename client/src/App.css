@@ -299,9 +299,7 @@ form {
   gap: 1rem;
 }
 
-input,
-select,
-textarea {
+input, select, textarea {
   padding: 0.6rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -322,7 +320,6 @@ button[type="submit"]:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 6px 18px rgba(0, 123, 255, 0.18);
 }
-
 /* ========= EVENT DETAIL PAGE ========= */
 .event-detail-wrapper {
   display: flex;
@@ -347,8 +344,60 @@ body.light .event-detail-card {
   color: #212529;
   padding: 2.5rem 2rem;
 }
-
 /* Add padding and spacing for the event detail page */
+.dashboard-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.13);
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.3rem;
+  transition: background 0.3s;
+}
+
+body.dark .dashboard-container {
+  background: rgba(30, 30, 30, 0.92);
+  color: #f5f5f5;
+}
+
+.dashboard-container h2 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #004e7c;
+  text-align: center;
+}
+
+body.dark .dashboard-container h2 {
+  color: #90caf9;
+}
+
+.dashboard-container img {
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+  margin-bottom: 1rem;
+  max-height: 350px;
+  object-fit: cover;
+}
+
+.dashboard-container p {
+  font-size: 1.08rem;
+  margin-bottom: 0.3rem;
+  width: 100%;
+  text-align: left;
+}
+
+.dashboard-container strong {
+  color: #0073b1;
+}
+
+body.dark .dashboard-container strong {
+  color: #ffd54f;
+}
 
 .btn-primary {
   background: #007bff;
@@ -360,7 +409,7 @@ body.light .event-detail-card {
   font-size: 1.08rem;
   cursor: pointer;
   margin-top: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.13);
+  box-shadow: 0 2px 8px rgba(0,123,255,0.13);
   transition: background 0.2s, transform 0.2s;
 }
 
@@ -382,17 +431,14 @@ body.light .event-detail-card {
     padding: 1.2rem 0.5rem;
     max-width: 98vw;
   }
-
   .dashboard-container img {
     max-width: 100vw;
     max-height: 200px;
   }
-
   .dashboard-container h2 {
     font-size: 1.3rem;
   }
 }
-
 body.dark .event-detail-card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -433,210 +479,69 @@ body.dark .event-detail-card {
   font-weight: 500;
   font-size: 1rem;
   color: green;
-}/* =============================
-   🌙 THEMED DASHBOARD STYLES
-============================= */
-
-/* ========== Root Theme Vars ========== */
-:root {
-  --card-bg: #ffffff;
-  --text-color: #222;
-  --shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-  --accent: #2196f3;
 }
-
-.dashboard-container.dark {
-  --card-bg: #2a2a2a;
-  --text-color: #f3f3f3;
-  --shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-  --accent: #64b5f6;
-}
-
-/* ========== Base ========== */
-.dashboard-container {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 16px;
-  color: var(--text-color);
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  transition: background-color 0.3s, color 0.3s;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-container.dark {
-  background: rgba(30, 30, 30, 0.6);
-  backdrop-filter: blur(12px);
-}
-
-/* ========== Header ========== */
-.header-top {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
-}
-
-.header-top h2 {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.header-top p {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  color: var(--text-color);
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-/* ========== Buttons ========== */
-button,
-.btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.95rem;
-  border: none;
+.btn-bookings {
+  padding: 10px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
 }
 
-.secondary-btn {
-  background-color: #1976d2;
-  color: #fff;
+.btn-bookings:hover {
+  background-color: #e0e0e0;
 }
-
-.secondary-btn:hover {
-  background-color: #1565c0;
-}
-
-.danger-btn {
-  background-color: #d32f2f;
-  color: #fff;
-}
-
-.danger-btn:hover {
-  background-color: #b71c1c;
-}
-
-/* ========== Stats ========== */
-.dashboard-stats {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  aspect-ratio: 1 / 1;
-  min-width: 200px;
-  max-width: 240px;
-  background: var(--card-bg);
-  color: var(--text-color);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem;
-}
-
-/* ========== Sections ========== */
-.dashboard-section {
-  margin-top: 2rem;
-}
-
-.dashboard-section h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-
-/* ========== Card Grid ========== */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.2rem;
-  justify-items: center;
-}
-
-/* ========== Event & Booking Cards ========== */
 .event-card {
-  aspect-ratio: 1 / 1;
-  min-width: 200px;
-  max-width: 280px;
-  background: var(--card-bg);
-  color: var(--text-color);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;              /* More space inside the card */
+  margin-bottom: 1.5rem;
+  min-height: 180px;            /* Minimum height for larger layout */
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  list-style: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.3s;
 }
 
-.event-card:hover {
-  transform: translateY(-3px);
+.btn-edit {
+  margin-top: 1rem;
+  padding: 10px 16px;
+  background-color: #f0f8ff;
+  border: 1px solid #0077cc;
+  border-radius: 6px;
+  color: #0077cc;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-self: flex-start; /* Align button to left of card */
 }
 
-.event-card h4 a {
-  color: var(--accent);
-  text-decoration: none;
+.btn-edit:hover {
+  background-color: #e6f2ff;
 }
 
-.event-date {
-  font-size: 0.9rem;
-  color: gray;
-  margin: 0.5rem 0;
+.event-list {
+  padding: 0;
+}
+.btn-cancel {
+  padding: 10px 14px;
+  background-color: #ffe6e6;
+  border: 1px solid #cc0000;
+  border-radius: 6px;
+  color: #cc0000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.card-actions {
-  margin-top: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
+.btn-cancel:hover {
+  background-color: #ffd6d6;
 }
 
-/* ========== Booking Status ========== */
-.status-tag {
-  display: inline-block;
-  margin-top: 0.5rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  background-color: var(--accent);
-  color: #fff;
-  text-align: center;
-}
 
-/* ========== Empty State ========== */
-.empty-state {
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.95rem;
-  background: rgba(240, 240, 240, 0.7);
-  color: gray;
-  border-radius: 10px;
-}
-
-.dashboard-container.dark .empty-state {
-  background: rgba(50, 50, 50, 0.4);
-  color: #ccc;
-}
-
-/* ========== Responsive Tweaks ========== */
-@media (max-width: 600px) {
-  .dashboard-stats {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .header-actions {
-    flex-direction: column;
-  }
-}
