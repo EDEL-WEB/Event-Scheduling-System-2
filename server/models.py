@@ -66,6 +66,8 @@ class Booking(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    status = db.Column(db.String, default="Booked")
+
 
     
     serialize_rules = (

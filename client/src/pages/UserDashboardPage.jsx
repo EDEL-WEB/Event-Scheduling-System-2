@@ -1,97 +1,110 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext'; // Adjust path if needed
+import '../App.css';
 
 const UserDashboardPage = () => {
+  const { theme } = useContext(ThemeContext); // 👈 grabs dark/light
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/auth/check_session', { credentials: 'include' })
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('Not authenticated');
-      })
-      .then((data) => {
-        setUser(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      .then(res => res.ok ? res.json() : Promise.reject('Not authenticated'))
+      .then(data => setUser(data))
+      .catch(() => navigate('/login'));
   }, []);
+
+  const handleLogout = () => {
+    fetch('/auth/logout', { method: 'DELETE', credentials: 'include' })
+      .then(() => {
+        setUser(null);
+        navigate('/login');
+      });
+  };
 
   const handleDelete = (eventId) => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       fetch(`/events/${eventId}`, {
         method: 'DELETE',
         credentials: 'include',
-      })
-        .then((res) => {
-          if (res.ok) {
-            // Remove deleted event from local state
-            setUser((prev) => ({
-              ...prev,
-              events: prev.events.filter((e) => e.id !== eventId),
-            }));
-          } else {
-            alert('Failed to delete event.');
-          }
-        });
+      }).then(res => {
+        if (res.ok) {
+          setUser(prev => ({
+            ...prev,
+            events: prev.events.filter(e => e.id !== eventId),
+          }));
+        } else {
+          alert('Failed to delete event.');
+        }
+      });
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <p>Please log in to view your dashboard.</p>;
+  if (!user) return null;
 
-  const userEvents = user.events || [];
-  const userBookings = user.bookings || [];
+  const { username, email, events = [], bookings = [] } = user;
 
   return (
-    <div className="dashboard-container">
-      <h2>Welcome, {user.username} 👋</h2>
-      <p>Email: {user.email}</p>
+    <div className={`dashboard-container ${theme}`}>
+      <div className="header-top">
+        <h2>👋 Welcome, {username}!</h2>
+        <p>{email}</p>
+      </div>
+
+      <div className="dashboard-stats">
+        <div className="stat-card">
+          <h3>{events.length}</h3>
+          <p>My Events</p>
+        </div>
+        <div className="stat-card">
+          <h3>{bookings.length}</h3>
+          <p>My Bookings</p>
+        </div>
+      </div>
 
       <section className="dashboard-section">
-        <h3>Your Events</h3>
-        {userEvents.length === 0 ? (
-          <p>You haven’t created any events yet.</p>
+        <h3>📅 My Events</h3>
+        {events.length === 0 ? (
+          <div className="empty-state">
+            <p>You haven’t created any events yet.</p>
+          </div>
         ) : (
-          <ul className="event-list">
-            {userEvents.map((event) => (
-              <li key={event.id} className="event-card">
-                <Link to={`/events/${event.id}`}>
-                  <h4>{event.title}</h4>
-                </Link>
+          <div className="card-grid">
+            {events.map(event => (
+              <div className="event-card" key={event.id}>
+                <h4><Link to={`/events/${event.id}`}>{event.title}</Link></h4>
+                <p className="event-date">{event.date}</p>
                 <p>{event.description}</p>
-                <small>{event.date}</small>
-
-                <div style={{ marginTop: '10px' }}>
+                <div className="card-actions">
                   <Link to={`/events/${event.id}/edit`}>
-                    <button style={{ marginRight: '10px' }}>Edit</button>
+                    <button className="btn edit-btn">✏️ Edit</button>
                   </Link>
-                  <button onClick={() => handleDelete(event.id)}>Delete</button>
+                  <button className="btn delete-btn" onClick={() => handleDelete(event.id)}>🗑️ Delete</button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
       <section className="dashboard-section">
-        <h3>Your Bookings</h3>
-        {userBookings.length === 0 ? (
-          <p>You haven’t booked any events yet.</p>
+        <h3>🎟️ My Bookings</h3>
+        {bookings.length === 0 ? (
+          <div className="empty-state">
+            <p>You haven’t booked any events yet.</p>
+          </div>
         ) : (
-          <ul className="event-list">
-            {userBookings.map((booking) => (
-              <li key={booking.id} className="event-card">
-                <Link to={`/events/${booking.event?.id}`}>
-                  <h4>{booking.event?.title}</h4>
-                </Link>
+          <div className="card-grid">
+            {bookings.map(booking => (
+              <div className="event-card" key={booking.id}>
+                <h4><Link to={`/events/${booking.event?.id}`}>{booking.event?.title}</Link></h4>
+                <p className="event-date">{booking.event?.date}</p>
                 <p>{booking.event?.description}</p>
-                <small>{booking.event?.date}</small>
-              </li>
+                <span className="status-tag">{booking.status || 'Booked'}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </div>
