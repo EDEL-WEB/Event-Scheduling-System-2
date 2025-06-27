@@ -118,13 +118,6 @@ Import the provided Postman Collection from the docs/ folder.
 
 Use {{base_url}} as http://localhost:5555
 
-Make sure to enable cookies to test session-based auth.
-
-Dark/Light Mode togglle
-
- Email notifications on booking
-
- Admin panel
 
  Author
 Edel Omondi
