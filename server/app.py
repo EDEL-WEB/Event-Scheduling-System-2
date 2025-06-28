@@ -35,6 +35,17 @@ def serve_react(path):
 def home():
     return {"message": "Event Scheduling API is running!"}, 200
 
+from flask_migrate import upgrade
+
+@app.route("/upgrade")
+def run_upgrade():
+    try:
+        upgrade()
+        return {"message": "✅ Database upgraded successfully!"}, 200
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
