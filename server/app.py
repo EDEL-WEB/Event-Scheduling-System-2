@@ -21,9 +21,20 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
-@app.route("/")
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    build_dir = os.path.join(os.path.dirname(__file__), '..', 'client', 'build')
+    file_path = os.path.join(build_dir, path)
+    if path and os.path.exists(file_path):
+        return send_from_directory(build_dir, path)
+    return send_from_directory(build_dir, 'index.html')
+
+
+@app.route("/api")
 def home():
     return {"message": "Event Scheduling API is running!"}, 200
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
