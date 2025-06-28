@@ -41,7 +41,7 @@ const UserBookingsPage = () => {
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to cancel booking');
-        // Remove the cancelled booking from state
+        
         setBookings(prev => prev.filter(b => b.id !== bookingId));
       })
       .catch(err => alert(err.message));
@@ -63,27 +63,27 @@ const UserBookingsPage = () => {
             <li key={booking.id} className="event-card">
               <h4>{event.title}</h4>
               <p>{event.description}</p>
-              <p>📍 <strong>{event.location}</strong></p>
-              <p>📅 <strong>{event.date}</strong></p>
+              <p> <strong>{event.location}</strong></p>
+              <p> <strong>{event.date}</strong></p>
               <p>Booked at: {new Date(booking.created_at).toLocaleString()}</p>
 
               <div style={{ marginTop: '1rem', display: 'flex', gap: '10px' }}>
-                {/* ✏️ Edit only if user is creator */}
+                {/*  Edit only if user is creator */}
                 {isCreator && (
                   <button
                     className="btn-edit"
                     onClick={() => navigate(`/events/${event.id}/edit`)}
                   >
-                    ✏️ Edit Event
+                     Edit Event
                   </button>
                 )}
 
-                {/* 🗑 Cancel Booking button */}
+                {/*  Cancel Booking button */}
                 <button
                   className="btn-cancel"
                   onClick={() => handleCancelBooking(booking.id)}
                 >
-                  🗑 Cancel Booking
+                   Cancel Booking
                 </button>
               </div>
             </li>

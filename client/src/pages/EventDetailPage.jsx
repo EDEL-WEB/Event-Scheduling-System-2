@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../App.css'; // External CSS file for button styling
+import '../App.css'; 
 
 const EventDetailPage = () => {
   const { id } = useParams();
@@ -10,13 +10,13 @@ const EventDetailPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch event details
+  
     fetch(`/events/${id}`)
       .then((res) => res.json())
       .then((data) => setEvent(data))
       .catch((err) => console.error("Event not found", err));
 
-    // Check user session
+    
     fetch('/auth/check_session', { credentials: 'include' })
       .then((res) => {
         if (!res.ok) throw new Error('Unauthorized');

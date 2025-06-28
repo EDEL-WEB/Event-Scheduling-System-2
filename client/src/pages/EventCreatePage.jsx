@@ -10,7 +10,7 @@ const EventCreatePage = () => {
     date: '',
     start_time: '',
     end_time: '',
-    image: null // new: holds the file
+    image: null 
   };
 
   const validationSchema = Yup.object({

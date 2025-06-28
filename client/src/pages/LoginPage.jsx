@@ -21,7 +21,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
-      credentials: 'include' // ✅ important for session cookies
+      credentials: 'include'
     })
       .then(res => {
         if (!res.ok) {
@@ -33,9 +33,9 @@ const LoginPage = ({ setIsAuthenticated }) => {
         if (data.error) {
           alert(data.error);
         } else {
-          setIsAuthenticated(true); // ✅ set auth state
+          setIsAuthenticated(true); 
           resetForm();
-          navigate('/dashboard');  // ✅ redirect
+          navigate('/dashboard'); 
         }
       })
       .catch(err => {

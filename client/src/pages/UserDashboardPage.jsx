@@ -27,7 +27,7 @@ const UserDashboardPage = () => {
       })
         .then((res) => {
           if (res.ok) {
-            // Remove deleted event from local state
+            
             setUser((prev) => ({
               ...prev,
               events: prev.events.filter((e) => e.id !== eventId),
@@ -47,7 +47,7 @@ const UserDashboardPage = () => {
 
   return (
     <div className="dashboard-container">
-      <h2>Welcome, {user.username} 👋</h2>
+      <h2>Welcome, {user.username} </h2>
       <p>Email: {user.email}</p>
 
       <section className="dashboard-section">

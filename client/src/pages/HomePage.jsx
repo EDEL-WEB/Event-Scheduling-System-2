@@ -7,7 +7,7 @@ function HomePage() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Get session user
+  
   useEffect(() => {
     fetch("/auth/check_session", { credentials: "include" })
       .then((res) => (res.ok ? res.json() : null))
@@ -15,7 +15,7 @@ function HomePage() {
       .catch(() => setUser(null));
   }, []);
 
-  // Get all events
+  
   useEffect(() => {
     fetch("http://localhost:5555/events")
       .then((res) => res.json())

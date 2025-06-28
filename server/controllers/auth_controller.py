@@ -1,11 +1,10 @@
 from flask import request, session, jsonify, Blueprint
 from flask_restful import Resource, Api
-from models import User, db
+from models import User, db, Booking
 from sqlalchemy.exc import IntegrityError
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 api = Api(auth_bp)
-
 
 class Signup(Resource):
     def post(self):
@@ -35,6 +34,7 @@ class Signup(Resource):
         except IntegrityError:
             db.session.rollback()
             return {"errors": ["Username or email already exists."]}, 422
+
 
 class Login(Resource):
     def post(self):
@@ -68,11 +68,13 @@ class CheckSession(Resource):
         if user_id:
             user = User.query.get(user_id)
             if user:
-                return {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email
-                }, 200
+                return user.to_dict(rules=(
+                    '-password_hash',
+                    'events',
+                    'bookings',
+                    'bookings.event',
+                    'events.creator'
+                )), 200
         return {"error": "Unauthorized"}, 401
 
 

@@ -1,4 +1,4 @@
-/* ========= GENERAL RESET ========= */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,7 +10,7 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* ========= LIGHT & DARK THEMES ========= */
+
 body.light {
   background-color: #f8f9fa;
   color: #212529;
@@ -21,7 +21,7 @@ body.dark {
   color: #f5f5f5;
 }
 
-/* ========= NAVBAR ========= */
+
 .navbar {
   position: sticky;
   top: 0;
@@ -43,7 +43,7 @@ body.dark .navbar {
   background-color: rgba(30, 30, 30, 0.8);
 }
 
-/* Navbar Header */
+
 .navbar-header {
   display: flex;
   justify-content: space-between;
@@ -56,7 +56,7 @@ body.dark .navbar {
   color: #004e7c;
 }
 
-/* Nav Links */
+
 .navbar-links {
   display: flex;
   gap: 20px;
@@ -115,7 +115,7 @@ body.dark .navbar-links button {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Responsive (Mobile) */
+
 .toggle-button {
   font-size: 24px;
   background: none;
@@ -140,7 +140,7 @@ body.dark .navbar-links button {
   }
 }
 
-/* ========= EVENT LIST / HOMEPAGE ========= */
+
 .homepage-header {
   display: flex;
   justify-content: flex-end;
@@ -163,7 +163,7 @@ body.dark .navbar-links button {
   padding: 2rem;
 }
 
-/* Event Card */
+
 .event-card {
   border-radius: 16px;
   overflow: hidden;
@@ -196,7 +196,7 @@ body.dark .event-card {
   object-fit: cover;
 }
 
-/* Event Details */
+
 .event-details {
   padding: 1.2rem;
   display: flex;
@@ -215,7 +215,7 @@ body.dark .event-card {
   line-height: 1.5;
 }
 
-/* Card Buttons */
+
 .card-buttons {
   margin-top: 1rem;
   display: flex;
@@ -223,7 +223,7 @@ body.dark .event-card {
   flex-wrap: wrap;
 }
 
-/* Button Base */
+
 .btn {
   padding: 0.5rem 1rem;
   border-radius: 10px;
@@ -274,7 +274,7 @@ body.dark .event-card {
   }
 }
 
-/* ========= FORM STYLING ========= */
+
 .form-container {
   max-width: 500px;
   margin: 2rem auto;
@@ -320,7 +320,7 @@ button[type="submit"]:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 6px 18px rgba(0, 123, 255, 0.18);
 }
-/* ========= EVENT DETAIL PAGE ========= */
+
 .event-detail-wrapper {
   display: flex;
   justify-content: center;
@@ -344,7 +344,7 @@ body.light .event-detail-card {
   color: #212529;
   padding: 2.5rem 2rem;
 }
-/* Add padding and spacing for the event detail page */
+
 .dashboard-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -497,9 +497,9 @@ body.dark .event-detail-card {
 .event-card {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 1.5rem;              /* More space inside the card */
+  padding: 1.5rem;            
   margin-bottom: 1.5rem;
-  min-height: 180px;            /* Minimum height for larger layout */
+  min-height: 180px;            
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   list-style: none;
@@ -519,7 +519,7 @@ body.dark .event-detail-card {
   font-size: 15px;
   cursor: pointer;
   transition: background-color 0.3s;
-  align-self: flex-start; /* Align button to left of card */
+  align-self: flex-start; 
 }
 
 .btn-edit:hover {
