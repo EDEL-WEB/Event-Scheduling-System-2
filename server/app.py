@@ -10,7 +10,6 @@ from flask import send_from_directory
 from flask_migrate import upgrade
 import os
 
-# 🔹 Register Blueprints
 app.register_blueprint(user_bp, url_prefix="/users")
 app.register_blueprint(event_bp, url_prefix="/events")
 app.register_blueprint(booking_bp, url_prefix="/bookings")
@@ -48,10 +47,8 @@ def serve_react(path):
         return send_from_directory(build_dir, path)
     return send_from_directory(build_dir, 'index.html')
 
-# 🔧 Add this block to auto-create tables on first request (temporary)
-@app.before_first_request
-def create_tables():
-    db.create_all()
+
+
 
 # ✅ Run server
 if __name__ == "__main__":

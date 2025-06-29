@@ -46,8 +46,13 @@ bcrypt = Bcrypt(app)
 api = Api(app)
 
 
+# CORS setup
 CORS(app, supports_credentials=True)
 
-
-
+# Initialize DB
 db.init_app(app)
+
+# ✅ Add this (temporarily) to create tables in the deployed DB
+@app.before_first_request
+def create_tables():
+    db.create_all()
