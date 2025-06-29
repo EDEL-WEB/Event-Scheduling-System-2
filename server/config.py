@@ -20,7 +20,9 @@ app = Flask(
 )
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI", "sqlite:///app.db")
+DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+
 
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

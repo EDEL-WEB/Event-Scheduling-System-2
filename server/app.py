@@ -1,3 +1,5 @@
+# server/app.py
+
 from config import app, db, api
 from models import User, Event, Booking
 
@@ -10,34 +12,29 @@ from flask import send_from_directory
 from flask_migrate import upgrade
 import os
 
+# Register Blueprints
 app.register_blueprint(user_bp, url_prefix="/users")
 app.register_blueprint(event_bp, url_prefix="/events")
 app.register_blueprint(booking_bp, url_prefix="/bookings")
 app.register_blueprint(auth_bp, url_prefix="/auth")
 
-
+# Serve uploaded images
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-
+# Basic API status route
 @app.route("/api")
 def api_status():
     return {"message": " Event Scheduling API is running!"}, 200
 
-@app.route("/upgrade")
-def run_upgrade():
-    try:
-        upgrade()
-        return {"message": " Database upgraded successfully!"}, 200
-    except Exception as e:
-        return {"error": str(e)}, 500
-
+# Serve static files from React build folder
 @app.route('/static/<path:path>')
 def serve_static(path):
     static_dir = os.path.join(os.path.dirname(__file__), '..', 'client', 'build', 'static')
     return send_from_directory(static_dir, path)
 
+# Serve React frontend
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
@@ -47,9 +44,14 @@ def serve_react(path):
         return send_from_directory(build_dir, path)
     return send_from_directory(build_dir, 'index.html')
 
+# Automatically run migrations on startup
+with app.app_context():
+    try:
+        upgrade()
+        print("✅ Database upgraded successfully.")
+    except Exception as e:
+        print(f"❌ Migration error: {e}")
 
-
-
-# ✅ Run server
+# Run Flask app
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
