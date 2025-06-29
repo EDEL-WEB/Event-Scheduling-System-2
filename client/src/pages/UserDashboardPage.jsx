@@ -12,7 +12,12 @@ const UserDashboardPage = () => {
         throw new Error('Not authenticated');
       })
       .then((data) => {
-        setUser(data);
+        // Make sure data contains expected keys
+        setUser({
+          ...data,
+          events: Array.isArray(data.events) ? data.events : [],
+          bookings: Array.isArray(data.bookings) ? data.bookings : [],
+        });
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -39,21 +44,19 @@ const UserDashboardPage = () => {
   if (loading) return <p>Loading...</p>;
   if (!user) return <p>Please log in to view your dashboard.</p>;
 
-  const userEvents = user.events || [];
-  const userBookings = user.bookings || [];
-
   return (
     <div className="dashboard-container">
       <h2>Welcome, {user.username}</h2>
       <p>Email: {user.email}</p>
 
+      {/* Events Section */}
       <section className="dashboard-section">
         <h3>Your Events</h3>
-        {userEvents.length === 0 ? (
+        {user.events.length === 0 ? (
           <p>You haven’t created any events yet.</p>
         ) : (
           <ul className="event-list">
-            {userEvents.map((event) => (
+            {user.events.map((event) => (
               <li key={event.id} className="event-card">
                 <Link to={`/events/${event.id}`}>
                   <h4>{event.title}</h4>
@@ -72,19 +75,20 @@ const UserDashboardPage = () => {
         )}
       </section>
 
+      {/* Bookings Section */}
       <section className="dashboard-section">
         <h3>Your Bookings</h3>
-        {userBookings.length === 0 ? (
+        {user.bookings.length === 0 ? (
           <p>You haven’t booked any events yet.</p>
         ) : (
           <ul className="event-list">
-            {userBookings.map((booking) => (
+            {user.bookings.map((booking) => (
               <li key={booking.id} className="event-card">
                 <Link to={`/events/${booking.event?.id}`}>
-                  <h4>{booking.event?.title}</h4>
+                  <h4>{booking.event?.title || 'Untitled'}</h4>
                 </Link>
-                <p>{booking.event?.description}</p>
-                <small>{booking.event?.date}</small>
+                <p>{booking.event?.description || 'No description'}</p>
+                <small>{booking.event?.date || 'No date'}</small>
               </li>
             ))}
           </ul>
