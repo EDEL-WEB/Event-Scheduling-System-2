@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const UserDashboardPage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/auth/check_session', { credentials: 'include' })
@@ -24,18 +23,16 @@ const UserDashboardPage = () => {
       fetch(`/events/${eventId}`, {
         method: 'DELETE',
         credentials: 'include',
-      })
-        .then((res) => {
-          if (res.ok) {
-            
-            setUser((prev) => ({
-              ...prev,
-              events: prev.events.filter((e) => e.id !== eventId),
-            }));
-          } else {
-            alert('Failed to delete event.');
-          }
-        });
+      }).then((res) => {
+        if (res.ok) {
+          setUser((prev) => ({
+            ...prev,
+            events: prev.events.filter((e) => e.id !== eventId),
+          }));
+        } else {
+          alert('Failed to delete event.');
+        }
+      });
     }
   };
 
@@ -47,7 +44,7 @@ const UserDashboardPage = () => {
 
   return (
     <div className="dashboard-container">
-      <h2>Welcome, {user.username} </h2>
+      <h2>Welcome, {user.username}</h2>
       <p>Email: {user.email}</p>
 
       <section className="dashboard-section">
@@ -63,7 +60,6 @@ const UserDashboardPage = () => {
                 </Link>
                 <p>{event.description}</p>
                 <small>{event.date}</small>
-
                 <div style={{ marginTop: '10px' }}>
                   <Link to={`/events/${event.id}/edit`}>
                     <button style={{ marginRight: '10px' }}>Edit</button>
