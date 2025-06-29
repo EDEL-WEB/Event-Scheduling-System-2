@@ -53,6 +53,9 @@ CORS(app, supports_credentials=True)
 db.init_app(app)
 
 # ✅ Add this (temporarily) to create tables in the deployed DB
-@app.before_first_request
-def create_tables():
-    db.create_all()
+@app.before_request
+def initialize():
+    if not hasattr(app, 'initialized'):
+        # Do your first-time setup logic here
+        app.initialized = True
+
