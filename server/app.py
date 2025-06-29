@@ -34,13 +34,10 @@ def run_upgrade():
     except Exception as e:
         return {"error": str(e)}, 500
 
-
-
 @app.route('/static/<path:path>')
 def serve_static(path):
     static_dir = os.path.join(os.path.dirname(__file__), '..', 'client', 'build', 'static')
     return send_from_directory(static_dir, path)
-
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -51,5 +48,11 @@ def serve_react(path):
         return send_from_directory(build_dir, path)
     return send_from_directory(build_dir, 'index.html')
 
+# 🔧 Add this block to auto-create tables on first request (temporary)
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+# ✅ Run server
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
