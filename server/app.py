@@ -1,5 +1,3 @@
-# server/app.py
-
 from config import app, db, api
 from models import User, Event, Booking
 
@@ -13,27 +11,33 @@ from flask_migrate import upgrade
 import os
 
 
+# Register Blueprints
 app.register_blueprint(user_bp, url_prefix="/users")
 app.register_blueprint(event_bp, url_prefix="/events")
 app.register_blueprint(booking_bp, url_prefix="/bookings")
 app.register_blueprint(auth_bp, url_prefix="/auth")
 
 
+# Uploads route
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
+# API health check route
 @app.route("/api")
 def api_status():
-    return {"message": " Event Scheduling API is running!"}, 200
+    return {"message": "Event Scheduling API is running!"}, 200
 
 
+# Serve static files
 @app.route('/static/<path:path>')
 def serve_static(path):
     static_dir = os.path.join(os.path.dirname(__file__), '..', 'client', 'build', 'static')
     return send_from_directory(static_dir, path)
 
 
+# Serve React frontend
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
@@ -44,6 +48,16 @@ def serve_react(path):
     return send_from_directory(build_dir, 'index.html')
 
 
-# Run Flask app
+# Automatically apply database migrations on first request (for Render)
+@app.before_first_request
+def initialize_database():
+    try:
+        upgrade()
+        print("Database upgraded successfully.")
+    except Exception as e:
+        print("Error during DB upgrade:", e)
+
+
+# Run the app
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

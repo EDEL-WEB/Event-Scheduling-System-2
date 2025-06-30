@@ -115,6 +115,7 @@ DELETE	/bookings/:id	Cancel a booking
 
 Testing with Postman
 Import the provided Postman Collection from the docs/ folder.
+deployed link https://event-scheduling-system-2-2.onrender.com
 
 Use {{base_url}} as http://localhost:5555
 
