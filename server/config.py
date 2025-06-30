@@ -51,11 +51,3 @@ api = Api(app)
 CORS(app, supports_credentials=True)
 db.init_app(app)
 
-# Automatically apply database migrations (for Render)
-@app.before_first_request
-def initialize_database():
-    try:
-        upgrade()
-        print("✅ Database upgraded successfully.")
-    except Exception as e:
-        print("❌ Error during DB upgrade:", e)
