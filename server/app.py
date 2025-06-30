@@ -48,14 +48,6 @@ def serve_react(path):
     return send_from_directory(build_dir, 'index.html')
 
 
-# Automatically apply database migrations on first request (for Render)
-@app.before_first_request
-def initialize_database():
-    try:
-        upgrade()
-        print("Database upgraded successfully.")
-    except Exception as e:
-        print("Error during DB upgrade:", e)
 
 
 # Run the app
