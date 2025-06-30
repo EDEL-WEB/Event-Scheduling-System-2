@@ -1,5 +1,3 @@
-# server/config.py
-
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +8,7 @@ from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
 from dotenv import load_dotenv
 
-# Load environment variables from .env
+# Load environment variables from .env (if needed)
 load_dotenv()
 
 # Flask app setup
@@ -28,6 +26,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Secret key
 app.secret_key = os.getenv("SECRET_KEY", "supersecret")
+
+# ✅ Session cookie settings (important for login via browser)
+app.config['SESSION_COOKIE_SECURE'] = False          # Allow HTTP
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'        # Allow sending cookies across sites
+
+# ✅ Enable CORS for frontend origin (e.g. React dev server)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 # File upload configuration
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
@@ -48,6 +53,6 @@ db = SQLAlchemy(metadata=metadata)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 api = Api(app)
-CORS(app, supports_credentials=True)
-db.init_app(app)
 
+# Initialize db
+db.init_app(app)

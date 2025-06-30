@@ -1,4 +1,3 @@
-// src/pages/HomePage.jsx
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -7,7 +6,7 @@ function HomePage() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = "http://127.0.0.1:5555"; // Local Flask backend
 
   // Check user session
   useEffect(() => {
