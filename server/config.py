@@ -3,15 +3,17 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_restful import Api
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
 from dotenv import load_dotenv
 
-
+# Load environment variables from .env
 load_dotenv()
+
+# Flask app setup
 app = Flask(
     __name__,
     static_url_path='',
@@ -19,46 +21,41 @@ app = Flask(
     template_folder='../client/build'
 )
 
-
+# Database configuration
 DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///app.db")
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-
-
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Secret key
 app.secret_key = os.getenv("SECRET_KEY", "supersecret")
 
+# File upload configuration
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB max file size
 
-
+# JSON formatting
 app.json.compact = False
 
-
+# Naming convention for Alembic compatibility
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s"
 })
 
-
+# Extensions initialization
 db = SQLAlchemy(metadata=metadata)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 api = Api(app)
-
-
-# CORS setup
 CORS(app, supports_credentials=True)
-
-# Initialize DB
 db.init_app(app)
 
-# ✅ Add this (temporarily) to create tables in the deployed DB
-@app.before_request
-def initialize():
-    if not hasattr(app, 'initialized'):
-        # Do your first-time setup logic here
-        app.initialized = True
-
+# Automatically apply database migrations (for Render)
+@app.before_first_request
+def initialize_database():
+    try:
+        upgrade()
+        print("✅ Database upgraded successfully.")
+    except Exception as e:
+        print("❌ Error during DB upgrade:", e)
