@@ -7,22 +7,25 @@ function HomePage() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  // Check user session
   useEffect(() => {
-    fetch("/auth/check_session", { credentials: "include" })
+    fetch(`${API_URL}/auth/check_session`, { credentials: "include" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setUser(data))
       .catch(() => setUser(null));
   }, []);
 
-  
+  // Fetch events
   useEffect(() => {
-    fetch("http://localhost:5555/events")
+    fetch(`${API_URL}/events`)
       .then((res) => res.json())
       .then((data) => setEvents(data))
       .catch((err) => console.error("Failed to fetch events:", err));
   }, []);
 
+  // Handle booking
   const handleBook = (eventId) => {
     if (!user) {
       alert("You must be logged in to book.");
@@ -30,7 +33,7 @@ function HomePage() {
       return;
     }
 
-    fetch("/bookings", {
+    fetch(`${API_URL}/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -66,7 +69,7 @@ function HomePage() {
               src={
                 event.image_url?.startsWith("http") || event.image_url?.startsWith("/uploads/")
                   ? event.image_url
-                  : `/uploads/${event.image_url || "fallback.jpg"}`
+                  : `${API_URL}/uploads/${event.image_url || "fallback.jpg"}`
               }
               alt={event.title}
               className="event-image"
